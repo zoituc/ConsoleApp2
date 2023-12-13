@@ -12,14 +12,14 @@ namespace ConsoleApp2
     {
         static void Main(string[] args)
         {
-           //  string haar = "haarcascade_smile.xml";
             string haar = "haarcascade_frontalface_default.xml";
             string video = "videos.avi";
-            string video1 = "video1.mp4";
-
-            string haarPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), haar);
-            string videoPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), video);
+                      string path = Directory.GetCurrentDirectory();
+            string haarPath = Path.Combine(path, haar);
+            string videoPath = Path.Combine(path, video);
             string imagePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "images");
+
+
 
             if (!File.Exists(videoPath))
             {
@@ -33,15 +33,17 @@ namespace ConsoleApp2
                 using (VideoCapture capture = new VideoCapture(videoPath))
                 {
 
-                    if (capture == null)
+                    if (capture == null)         //se abre el video
                     {
                         Console.WriteLine("No se pudo abrir el video.");
                         return;
                     }
-                    if (!Directory.Exists(imagePath))
+
+                    if (!Directory.Exists(imagePath))          //creacion de directorio
                     {
                         Directory.CreateDirectory(imagePath);
                     }
+
                     int frameCount = 1;
 
                     // Bucle para mostrar cada frame del video
@@ -51,9 +53,10 @@ namespace ConsoleApp2
                         Mat frameScale = new Mat();
                         capture.Read(frame);
 
-                                                                    if (frame.Empty())
+                             if (frame.Empty())
                             break;
-                        var faces=                        cascade.DetectMultiScale(frame, 1.3, 5);
+
+                        var faces=     cascade.DetectMultiScale(frame, 1.3, 5);
                         
                         Cv2.CvtColor(frame, frameScale, ColorConversionCodes.RGB2GRAY);
                        
@@ -65,7 +68,8 @@ namespace ConsoleApp2
 
                         string imageName = Path.Combine(imagePath, $"image_{frameCount}.png");
                         frameCount++;
-                        Cv2.ImWrite(imageName, frame);
+
+                        Cv2.ImWrite(imageName, frame);   //guardar imagenes en carpeta images del escritorio
 
                         Cv2.ImShow("Video", frame);             //mostra video
                         Cv2.WaitKey(30);
